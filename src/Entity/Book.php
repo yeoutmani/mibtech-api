@@ -13,37 +13,49 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: BookRepository::class)]
+// Declares this class as an API Platform resource
 #[ApiResource(
-    normalizationContext: ['groups' => ['book:read']],
-    denormalizationContext: ['groups' => ['book:write']]
+    normalizationContext: ['groups' => ['book:read']],      // Fields visible in API responses
+    denormalizationContext: ['groups' => ['book:write']]    // Fields allowed when sending data
 )]
+// Enables filtering books by publication date (exact, before, after, etc.)
 #[ApiFilter(DateFilter::class, properties: ['publicationDate'])]
 class Book
 {
+    // Auto-incremented book ID, visible in read mode
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     #[Groups(['book:read'])]
     private ?int $id = null;
 
+    // Book title, readable and writable
     #[ORM\Column(length: 255)]
     #[Groups(['book:read','book:write'])]
     private ?string $title = null;
 
+    // Description of the book, optional
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     #[Groups(['book:read','book:write'])]
     private ?string $description = null;
 
+    // Publication date, optional
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     #[Groups(['book:read','book:write'])]
     private ?\DateTime $publicationDate = null;
 
-    #[ORM\ManyToOne(inversedBy: 'categories')]
-    #[ORM\JoinColumn(nullable: false)]
+    // Many books belong to one author
+    // inversedBy='books' → matches Author::$books
+    #[ORM\ManyToOne(inversedBy: 'books')]
+    #[ORM\JoinColumn(nullable: false)] // Book must always have an author
     #[Groups(['book:read','book:write'])]
     private ?Author $author = null;
 
     /**
+     * Many-to-Many relationship:
+     * - A book can belong to several categories
+     * - A category can contain several books
+     *
      * @var Collection<int, Category>
      */
     #[ORM\ManyToMany(targetEntity: Category::class, inversedBy: 'books')]
@@ -52,8 +64,11 @@ class Book
 
     public function __construct()
     {
+        // Always initialize Doctrine collections in the constructor
         $this->categories = new ArrayCollection();
     }
+
+    // ---------- GETTERS & SETTERS ----------
 
     public function getId(): ?int
     {
@@ -92,7 +107,6 @@ class Book
     public function setPublicationDate(?\DateTime $publicationDate): static
     {
         $this->publicationDate = $publicationDate;
-
         return $this;
     }
 
@@ -110,12 +124,16 @@ class Book
 
     /**
      * @return Collection<int, Category>
+     * Returns all categories linked to this book
      */
     public function getCategories(): Collection
     {
         return $this->categories;
     }
 
+    /**
+     * Adds a category to the book if it’s not already linked
+     */
     public function addCategory(Category $category): static
     {
         if (!$this->categories->contains($category)) {
@@ -125,6 +143,9 @@ class Book
         return $this;
     }
 
+    /**
+     * Removes a category from the book
+     */
     public function removeCategory(Category $category): static
     {
         $this->categories->removeElement($category);
