@@ -19,7 +19,7 @@
 
     <testsuites>
         <testsuite name="Project Test Suite">
-            <directory>tests/Api</directory>
+            <directory>tests/api</directory>
             <directory>tests</directory>
         </testsuite>
     </testsuites>

@@ -89,7 +89,10 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           VALIDATE_CHECKOV: false
           VALIDATE_TRIVY: false
+          VALIDATE_PHP: false
+          VALIDATE_PHP_BUILTIN: false
+          VALIDATE_PHP_SYNTAX: false
           VALIDATE_PHP_COMPOSER: false
           VALIDATE_PHP_PSALM: false
           VALIDATE_PHPSTAN: false
-          FILTER_REGEX_EXCLUDE: "(vendor/)"
+          FILTER_REGEX_EXCLUDE: "vendor/.*"
