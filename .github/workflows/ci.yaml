@@ -1,4 +1,3 @@
----
 name: CI
 
 on:
@@ -56,6 +55,7 @@ jobs:
         run: docker compose exec -T -e APP_ENV=test php bin/phpunit
       - name: Doctrine Schema Validator
         run: docker compose exec -T php bin/console doctrine:schema:validate --env=test
+
   lint:
     name: Lint
     runs-on: ubuntu-latest
@@ -69,13 +69,35 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Lint Code Base
+      - name: Run Super-Linter
         uses: super-linter/super-linter/slim@v8
         timeout-minutes: 30
         env:
           VALIDATE_ALL_CODEBASE: false
           DEFAULT_BRANCH: main
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VALIDATE_PHP: false
+          VALIDATE_PHP_BUILTIN: false
+          VALIDATE_PHP_PHPCS: false
           VALIDATE_PHP_PSALM: false
           VALIDATE_PHP_PHPSTAN: false
-          VALIDATE_PYTHON_BLACK: false
+          VALIDATE_PHP_PHP_CS_FIXER: false
+
+  php-cs-fixer:
+    name: PHP CS Fixer
+    runs-on: ubuntu-latest
+    needs: lint
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+
+      - name: Install Composer dependencies
+        run: composer install --no-interaction
+
+      - name: Run PHP CS Fixer
+        run: vendor/bin/php-cs-fixer fix --dry-run --diff
