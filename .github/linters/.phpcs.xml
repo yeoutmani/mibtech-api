@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<ruleset name="Project Rules">
+
+    <description>Project coding standards</description>
+
+    <!-- Scan only the src folder -->
+    <file>src</file>
+
+    <!-- Exclude duplicate code detection inside Doctrine entities -->
+    <rule ref="Generic.CodeAnalysis.DuplicateCode">
+        <exclude-pattern>src/Entity/*</exclude-pattern>
+    </rule>
+
+</ruleset>

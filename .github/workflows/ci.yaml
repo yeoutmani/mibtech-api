@@ -48,7 +48,7 @@ jobs:
               run: curl -v --fail-with-body http://localhost
 
             - name: Check HTTPS reachability
-              if: false # Remove when homepage is configured, or update the path
+              if: false
               run: curl -v --insecure --fail-with-body https://localhost
 
             - name: Check Mercure reachability
@@ -74,10 +74,11 @@ jobs:
             packages: read
             statuses: write
         steps:
-            - name: Checkout Code
+            - name: Checkout code
               uses: actions/checkout@v5
               with:
                   fetch-depth: 0
+                  persist-credentials: false
 
             - name: Run Super-Linter
               uses: super-linter/super-linter/slim@v8
@@ -100,6 +101,8 @@ jobs:
         steps:
             - name: Checkout code
               uses: actions/checkout@v5
+              with:
+                  persist-credentials: false
 
             - name: Setup PHP
               uses: shivammathur/setup-php@v2

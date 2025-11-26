@@ -36,7 +36,7 @@ To run integration and functional tests, you should use a dedicated test databas
 Create the test database schema using migrations:
 
 ```bash
-php bin/console --env=test doctrine:database:create 
+php bin/console --env=test doctrine:database:create
 php bin/console --env=test doctrine:migrations:migrate
 ```
 
@@ -45,6 +45,7 @@ Then run your tests:
 ```bash
 php bin/phpunit
 ```
+
 ## Starting the Project with Docker
 
 To start the project using Docker:
@@ -63,7 +64,6 @@ php -S localhost:8000 -t public
 ```
 
 ## API Access
-
 
 The API is available at:  
 `http://localhost:8000/api`
