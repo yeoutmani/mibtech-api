@@ -19,9 +19,19 @@
 
     <testsuites>
         <testsuite name="Project Test Suite">
+            <directory>tests/Api</directory>
             <directory>tests</directory>
         </testsuite>
     </testsuites>
+
+        <php>
+        <env name="APP_ENV" value="test"/>
+        <env name="KERNEL_CLASS" value="App\Kernel"/>
+        <env name="SYMFONY_DEPRECATIONS_HELPER" value="weak"/>
+        <env name="DATABASE_URL" value="postgresql://app:password@database:5432/app_test?serverVersion=14&charset=utf8"/>
+        <env name="API_PLATFORM_TEST_STAGE" value="api"/>
+        <env name="APP_DEBUG" value="0"/>
+    </php>
 
     <source ignoreSuppressionOfDeprecations="true"
             ignoreIndirectDeprecations="true"
