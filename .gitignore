@@ -7,10 +7,6 @@
 /public/bundles/
 /var/
 /vendor/
-###< symfony/framework-bundle ###
-/config/parameters.yaml
-/.env
-/.env.test
 ###> phpunit/phpunit ###
 /phpunit.xml
 /.phpunit.cache/
