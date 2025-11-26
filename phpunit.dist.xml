@@ -15,13 +15,12 @@
         <ini name="display_errors" value="1"/>
         <ini name="error_reporting" value="-1"/>
 
-        <server name="APP_ENV" value="test" force="true"/>
         <server name="SHELL_VERBOSITY" value="-1"/>
 
         <env name="APP_ENV" value="test"/>
         <env name="KERNEL_CLASS" value="App\Kernel"/>
         <env name="SYMFONY_DEPRECATIONS_HELPER" value="weak"/>
-        <env name="DATABASE_URL" value="postgresql://app:password@database:5432/app_test?serverVersion=16&amp;charset=utf8"/>
+        <env name="DATABASE_URL" value="postgresql://app:password@database:5432/app_test?serverVersion=14"/>
         <env name="API_PLATFORM_TEST_STAGE" value="api"/>
         <env name="APP_DEBUG" value="0"/>
     </php>
