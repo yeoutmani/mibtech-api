@@ -17,7 +17,6 @@ Symfony API for managing authors, books, and categories.
 git clone https://github.com/yeoutmani/mibtech-api.git
 cd mibtech-api
 composer install
-Copy config/parameters.yaml.dist to config/parameters.yaml and configure your database settings in config/parameters.yaml
 php bin/console doctrine:database:create
 php bin/console doctrine:migrations:migrate
 ```
@@ -37,9 +36,16 @@ Then run your tests:
 ```bash
 php bin/phpunit
 ```
+## Starting the Project with Docker
+
+To start the project using Docker:
+
+```bash
+docker compose build --pull --no-cache
+docker compose up -d
 ```
 
-## Start
+## Start Locally
 
 ```bash
 symfony server:start
