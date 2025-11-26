@@ -92,3 +92,4 @@ jobs:
           VALIDATE_PHP_COMPOSER: false
           VALIDATE_PHP_PSALM: false
           VALIDATE_PHPSTAN: false
+          FILTER_REGEX_EXCLUDE: "(vendor/)"
