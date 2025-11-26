@@ -1,103 +1,103 @@
 name: CI
 
 on:
-  push:
-    branches:
-      - main
-  pull_request: ~
-  workflow_dispatch: ~
+    push:
+        branches:
+            - main
+    pull_request: ~
+    workflow_dispatch: ~
 
 permissions:
-  contents: read
+    contents: read
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
-  cancel-in-progress: true
+    group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+    cancel-in-progress: true
 
 jobs:
-  tests:
-    name: Tests
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v5
-        with:
-          persist-credentials: false
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-      - name: Build Docker images
-        uses: docker/bake-action@v6
-        with:
-          pull: true
-          load: true
-          source: .
-          files: |
-            compose.yaml
-            compose.override.yaml
-          set: |
-            *.cache-from=type=gha,scope=${{github.ref}}
-            *.cache-from=type=gha,scope=refs/heads/main
-            *.cache-to=type=gha,scope=${{github.ref}},mode=max
-      - name: Start services
-        run: docker compose up --wait --no-build
-      - name: Check HTTP reachability
-        run: curl -v --fail-with-body http://localhost
-      - name: Check HTTPS reachability
-        if: false # Remove this line when the homepage is configured, or change the path to check
-        run: curl -v --insecure --fail-with-body https://localhost
-      - name: Check Mercure reachability
-        run: curl -vI --insecure --fail-with-body https://localhost/.well-known/mercure?topic=test
-      - name: Create test database
-        run: docker compose exec -T php bin/console doctrine:database:create --env=test
-      - name: Run migrations
-        run: docker compose exec -T php bin/console doctrine:migrations:migrate --env=test --no-interaction
-      - name: Run PHPUnit
-        run: docker compose exec -T -e APP_ENV=test php bin/phpunit
-      - name: Doctrine Schema Validator
-        run: docker compose exec -T php bin/console doctrine:schema:validate --env=test
+    tests:
+        name: Tests
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v5
+              with:
+                  persist-credentials: false
+            - name: Set up Docker Buildx
+              uses: docker/setup-buildx-action@v3
+            - name: Build Docker images
+              uses: docker/bake-action@v6
+              with:
+                  pull: true
+                  load: true
+                  source: .
+                  files: |
+                      compose.yaml
+                      compose.override.yaml
+                  set: |
+                      *.cache-from=type=gha,scope=${{github.ref}}
+                      *.cache-from=type=gha,scope=refs/heads/main
+                      *.cache-to=type=gha,scope=${{github.ref}},mode=max
+            - name: Start services
+              run: docker compose up --wait --no-build
+            - name: Check HTTP reachability
+              run: curl -v --fail-with-body http://localhost
+            - name: Check HTTPS reachability
+              if: false # Remove this line when the homepage is configured, or change the path to check
+              run: curl -v --insecure --fail-with-body https://localhost
+            - name: Check Mercure reachability
+              run: curl -vI --insecure --fail-with-body https://localhost/.well-known/mercure?topic=test
+            - name: Create test database
+              run: docker compose exec -T php bin/console doctrine:database:create --env=test
+            - name: Run migrations
+              run: docker compose exec -T php bin/console doctrine:migrations:migrate --env=test --no-interaction
+            - name: Run PHPUnit
+              run: docker compose exec -T -e APP_ENV=test php bin/phpunit
+            - name: Doctrine Schema Validator
+              run: docker compose exec -T php bin/console doctrine:schema:validate --env=test
 
-  lint:
-    name: Lint
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: read
-      statuses: write
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v5
-        with:
-          fetch-depth: 0
+    lint:
+        name: Lint
+        runs-on: ubuntu-latest
+        permissions:
+            contents: read
+            packages: read
+            statuses: write
+        steps:
+            - name: Checkout Code
+              uses: actions/checkout@v5
+              with:
+                  fetch-depth: 0
 
-      - name: Run Super-Linter
-        uses: super-linter/super-linter/slim@v8
-        timeout-minutes: 30
-        env:
-          VALIDATE_ALL_CODEBASE: false
-          DEFAULT_BRANCH: main
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          VALIDATE_PHP: false
-          VALIDATE_PHP_BUILTIN: false
-          VALIDATE_PHP_PHPCS: false
-          VALIDATE_PHP_PSALM: false
-          VALIDATE_PHP_PHPSTAN: false
-          VALIDATE_PHP_PHP_CS_FIXER: false
+            - name: Run Super-Linter
+              uses: super-linter/super-linter/slim@v8
+              timeout-minutes: 30
+              env:
+                  VALIDATE_ALL_CODEBASE: false
+                  DEFAULT_BRANCH: main
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                  VALIDATE_PHP: false
+                  VALIDATE_PHP_BUILTIN: false
+                  VALIDATE_PHP_PHPCS: false
+                  VALIDATE_PHP_PSALM: false
+                  VALIDATE_PHP_PHPSTAN: false
+                  VALIDATE_PHP_PHP_CS_FIXER: false
 
-  php-cs-fixer:
-    name: PHP CS Fixer
-    runs-on: ubuntu-latest
-    needs: lint
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v5
+    php-cs-fixer:
+        name: PHP CS Fixer
+        runs-on: ubuntu-latest
+        needs: lint
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v5
 
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: '8.4'
+            - name: Setup PHP
+              uses: shivammathur/setup-php@v2
+              with:
+                  php-version: "8.4"
 
-      - name: Install Composer dependencies
-        run: composer install --no-interaction
+            - name: Install Composer dependencies
+              run: composer install --no-interaction
 
-      - name: Run PHP CS Fixer
-        run: vendor/bin/php-cs-fixer fix --dry-run --diff
+            - name: Run PHP CS Fixer
+              run: vendor/bin/php-cs-fixer fix --dry-run --diff

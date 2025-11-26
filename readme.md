@@ -72,11 +72,11 @@ The API is available at:
 
 ```json
 {
-	"title": "book test",
-	"description": "book test",
-	"publicationDate": "2025-11-25",
-	"author": "/api/authors/1",
-	"categories": ["/api/categories/1"]
+    "title": "book test",
+    "description": "book test",
+    "publicationDate": "2025-11-25",
+    "author": "/api/authors/1",
+    "categories": ["/api/categories/1"]
 }
 ```
 
