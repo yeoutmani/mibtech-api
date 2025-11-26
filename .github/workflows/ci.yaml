@@ -55,7 +55,6 @@ jobs:
         if: false # Remove this line if Doctrine Migrations is installed
         run: docker compose exec -T php bin/console -e test doctrine:migrations:migrate --no-interaction
       - name: Run PHPUnit
-        if: false # Remove this line if PHPUnit is installed
         run: docker compose exec -T php bin/phpunit
       - name: Doctrine Schema Validator
         if: false # Remove this line if Doctrine ORM is installed
@@ -73,6 +72,20 @@ jobs:
         with:
           fetch-depth: 0
           persist-credentials: false
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          tools: composer
+          extensions: xml, xmlwriter, xmlreader, dom, simplexml, tokenizer, intl, mbstring, curl, openssl, json
+
+      - name: Install dependencies (Composer)
+        run: composer install --no-progress --no-interaction
+
+      - name: Run PHP-CS-Fixer (dry run)
+        run: vendor/bin/php-cs-fixer fix --dry-run --diff
+        
       - name: Lint Code Base
         uses: super-linter/super-linter/slim@v8
         env:

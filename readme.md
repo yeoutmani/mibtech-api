@@ -20,6 +20,15 @@ composer install
 php bin/console doctrine:database:create
 php bin/console doctrine:migrations:migrate
 ```
+
+## Fix the code style
+
+To automatically fix coding style issues across the project:
+
+```bash
+vendor/bin/php-cs-fixer fix
+```
+
 ## Testing
 
 To run integration and functional tests, you should use a dedicated test database. Copy `.env.test.example` to `.env.test` and configure the test database URL

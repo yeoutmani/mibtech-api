@@ -20,7 +20,7 @@ class CreateBookAndAuthorTest extends ApiTestCase
 
         $authorResponse = $client->request('POST', '/api/authors', [
             'headers' => ['Content-Type' => 'application/ld+json'], // JSON-LD request
-            'json' => [
+            'json'    => [
                 'name' => 'Mohammed Choukri', // Only required field in Author
             ],
         ]);
@@ -40,10 +40,10 @@ class CreateBookAndAuthorTest extends ApiTestCase
 
         $bookResponse = $client->request('POST', '/api/books', [
             'headers' => ['Content-Type' => 'application/ld+json'],
-            'json' => [
-                'title' => 'My Book',
+            'json'    => [
+                'title'           => 'My Book',
                 'publicationDate' => '2023-11-01',
-                'author' => $authorIri, // Link to the created Author
+                'author'          => $authorIri, // Link to the created Author
             ],
         ]);
 
