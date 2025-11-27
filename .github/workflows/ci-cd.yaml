@@ -131,7 +131,7 @@ jobs:
         name: Deploy to Production
         needs: [tests, lint, php-cs-fixer]
         runs-on: ubuntu-latest
-        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/chore/deploy-debug-env-check'
+        if: startsWith(github.ref, 'refs/heads/')
 
         steps:
             - name: Checkout code
@@ -184,6 +184,11 @@ jobs:
                       sudo mkdir -p /opt/mibtech-api
                       sudo cp -r ~/mibtech-api-deploy/* /opt/mibtech-api/
                       ls -l /opt/mibtech-api
+                      # Vérification et copie du .env si absent
+                      if [ ! -f /opt/mibtech-api/.env ] && [ -f ~/mibtech-api-deploy/.env ]; then
+                        echo ".env absent, copie depuis le dossier de déploiement."
+                        sudo cp ~/mibtech-api-deploy/.env /opt/mibtech-api/.env
+                      fi
                       if [ -f /opt/mibtech-api/.env ]; then
                         echo ".env file found:"
                         cat /opt/mibtech-api/.env
