@@ -88,20 +88,14 @@ jobs:
                   DEFAULT_BRANCH: main
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
                   VALIDATE_EDITORCONFIG: false
-                  VALIDATE_BIOME: false
-                  VALIDATE_BIOME_ES: false
-                  VALIDATE_BIOME_JS: false
-                  VALIDATE_BIOME_TS: false
-                  VALIDATE_BIOME_JSON: false
-                  VALIDATE_BIOME_CSS: false
-                  VALIDATE_BIOME_GRAPHQL: false
+                  VALIDATE_BIOME_FORMAT: false
+                  VALIDATE_JSCPD: false
                   VALIDATE_PHP: false
                   VALIDATE_PHP_BUILTIN: false
                   VALIDATE_PHP_PHPCS: false
                   VALIDATE_PHP_PSALM: false
                   VALIDATE_PHP_PHPSTAN: false
                   VALIDATE_PHP_PHP_CS_FIXER: false
-                  JSCPD_CONFIG: jscpd.config.json
 
     php-cs-fixer:
         name: PHP CS Fixer
