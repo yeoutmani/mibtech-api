@@ -131,7 +131,7 @@ jobs:
         name: Deploy to Production
         needs: [tests, lint, php-cs-fixer]
         runs-on: ubuntu-latest
-        if: github.ref == 'refs/heads/main'
+        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/chore/deploy-debug-env-check'
 
         steps:
             - name: Checkout code
@@ -182,13 +182,24 @@ jobs:
                   key: ${{ secrets.SSH_PRIVATE_KEY }}
                   script: |
                       sudo mkdir -p /opt/mibtech-api
-                      sudo cp -r ~/mibtech-api/* /opt/mibtech-api/
-                      sudo chmod 600 /opt/mibtech-api/.env
-                      sudo chown root:root /opt/mibtech-api/.env
+                      sudo cp -r ~/mibtech-api-deploy/* /opt/mibtech-api/
+                      ls -l /opt/mibtech-api
+                      if [ -f /opt/mibtech-api/.env ]; then
+                        echo ".env file found:"
+                        cat /opt/mibtech-api/.env
+                        sudo chmod 600 /opt/mibtech-api/.env
+                        sudo chown root:root /opt/mibtech-api/.env
+                      else
+                        echo ".env file not found in /opt/mibtech-api"
+                      fi
                       rm -rf ~/mibtech-api-deploy
                       cd /opt/mibtech-api
-                      sudo docker compose up -d --build
-                      sudo docker image prune -f
-                      sleep 10
-                      sudo docker compose ps
-                      sudo docker compose logs --tail=50 php
+                      if command -v docker >/dev/null 2>&1; then
+                        sudo docker compose up -d --build
+                        sudo docker image prune -f
+                        sleep 10
+                        sudo docker compose ps
+                        sudo docker compose logs --tail=50 php
+                      else
+                        echo "Docker is not installed or not in PATH"
+                      fi
