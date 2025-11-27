@@ -88,8 +88,8 @@ jobs:
                   DEFAULT_BRANCH: main
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
                   VALIDATE_EDITORCONFIG: false
+                  FIX_BIOME_FORMAT: false
                   VALIDATE_BIOME_FORMAT: false
-                  VALIDATE_JSCPD: false
                   VALIDATE_PHP: false
                   VALIDATE_PHP_BUILTIN: false
                   VALIDATE_PHP_PHPCS: false
