@@ -2,10 +2,11 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
-use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use App\Repository\AuthorRepository;
+use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -26,22 +27,22 @@ class Author
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['author:read','book:read'])]
+    #[Groups(['author:read', 'book:read'])]
     private ?int $id = null;
 
     // Author name, readable and writable, also exposed inside Book
     #[ORM\Column(length: 255)]
-    #[Groups(['author:read','author:write','book:read','book:write'])]
+    #[Groups(['author:read', 'author:write', 'book:read', 'book:write'])]
     private ?string $name = null;
 
     // Birth date, nullable, readable/writable
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
-    #[Groups(['author:read','author:write'])]
-    private ?\DateTime $birthDate = null;
+    #[Groups(['author:read', 'author:write'])]
+    private ?DateTime $birthDate = null;
 
     // Author biography, optional
     #[ORM\Column(type: Types::TEXT, nullable: true)]
-    #[Groups(['author:read','author:write'])]
+    #[Groups(['author:read', 'author:write'])]
     private ?string $biography = null;
 
     /**
@@ -81,12 +82,12 @@ class Author
         return $this;
     }
 
-    public function getBirthDate(): ?\DateTime
+    public function getBirthDate(): ?DateTime
     {
         return $this->birthDate;
     }
 
-    public function setBirthDate(?\DateTime $birthDate): static
+    public function setBirthDate(?DateTime $birthDate): static
     {
         $this->birthDate = $birthDate;
 
@@ -101,11 +102,12 @@ class Author
     public function setBiography(?string $biography): static
     {
         $this->biography = $biography;
+
         return $this;
     }
 
     /**
-     * Returns the list of books associated with the author
+     * Returns the list of books associated with the author.
      *
      * @return Collection<int, Book>
      */
@@ -116,7 +118,7 @@ class Author
 
     /**
      * Adds a book to the collection if it is not already present.
-     * Also updates the owning side: $book->setAuthor($this)
+     * Also updates the owning side: $book->setAuthor($this).
      */
     public function addBook(Book $book): static
     {

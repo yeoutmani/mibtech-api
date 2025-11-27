@@ -20,7 +20,7 @@ class DeleteBookAndAuthorTest extends ApiTestCase
 
         $authorResponse = $client->request('POST', '/api/authors', [
             'headers' => ['Content-Type' => 'application/ld+json'], // JSON-LD request
-            'json' => [
+            'json'    => [
                 'name' => 'Mohammed Choukri', // Required field for Author
             ],
         ]);
@@ -41,10 +41,10 @@ class DeleteBookAndAuthorTest extends ApiTestCase
 
         $bookResponse = $client->request('POST', '/api/books', [
             'headers' => ['Content-Type' => 'application/ld+json'],
-            'json' => [
-                'title' => 'Jane Book',
+            'json'    => [
+                'title'           => 'Jane Book',
                 'publicationDate' => '2025-11-25',
-                'author' => $authorIri, // Link Book → Author using IRI
+                'author'          => $authorIri, // Link Book → Author using IRI
             ],
         ]);
 

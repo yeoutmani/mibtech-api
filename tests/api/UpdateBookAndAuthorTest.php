@@ -21,7 +21,7 @@ class UpdateBookAndAuthorTest extends ApiTestCase
 
         $authorResponse = $client->request('POST', '/api/authors', [
             'headers' => ['Content-Type' => 'application/ld+json'],
-            'json' => [
+            'json'    => [
                 'name' => 'Mohammed Choukri',
             ],
         ]);
@@ -30,7 +30,7 @@ class UpdateBookAndAuthorTest extends ApiTestCase
 
         // Extract the author IRI
         $authorData = $authorResponse->toArray();
-        $authorIri = $authorData['@id'];
+        $authorIri  = $authorData['@id'];
 
 
         // --------------------------------------------------------
@@ -39,10 +39,10 @@ class UpdateBookAndAuthorTest extends ApiTestCase
 
         $bookResponse = $client->request('POST', '/api/books', [
             'headers' => ['Content-Type' => 'application/ld+json'],
-            'json' => [
-                'title' => 'Jane Book',
+            'json'    => [
+                'title'           => 'Jane Book',
                 'publicationDate' => '2025-11-25',
-                'author' => $authorIri,
+                'author'          => $authorIri,
             ],
         ]);
 
@@ -50,7 +50,7 @@ class UpdateBookAndAuthorTest extends ApiTestCase
 
         // Extract book IRI
         $bookData = $bookResponse->toArray();
-        $bookIri = $bookData['@id'];
+        $bookIri  = $bookData['@id'];
 
 
         // --------------------------------------------------------
@@ -62,9 +62,9 @@ class UpdateBookAndAuthorTest extends ApiTestCase
                 'Content-Type' => 'application/merge-patch+json', // Required for PATCH
             ],
             'json' => [
-                'title' => 'Jane Book Updated',
+                'title'           => 'Jane Book Updated',
                 'publicationDate' => '2025-12-01',
-                'author' => $authorIri,
+                'author'          => $authorIri,
             ],
         ]);
 
@@ -84,7 +84,7 @@ class UpdateBookAndAuthorTest extends ApiTestCase
 
         $updatedAuthorResponse = $client->request('PATCH', $authorIri, [
             'headers' => ['Content-Type' => 'application/merge-patch+json'],
-            'json' => [
+            'json'    => [
                 'name' => 'Mohammed Choukri Updated',
             ],
         ]);

@@ -20,6 +20,15 @@ composer install
 php bin/console doctrine:database:create
 php bin/console doctrine:migrations:migrate
 ```
+
+## Fix the code style
+
+To automatically fix coding style issues across the project:
+
+```bash
+vendor/bin/php-cs-fixer fix
+```
+
 ## Testing
 
 To run integration and functional tests, you should use a dedicated test database. Copy `.env.test.example` to `.env.test` and configure the test database URL
@@ -27,7 +36,7 @@ To run integration and functional tests, you should use a dedicated test databas
 Create the test database schema using migrations:
 
 ```bash
-php bin/console --env=test doctrine:database:create 
+php bin/console --env=test doctrine:database:create
 php bin/console --env=test doctrine:migrations:migrate
 ```
 
@@ -36,6 +45,7 @@ Then run your tests:
 ```bash
 php bin/phpunit
 ```
+
 ## Starting the Project with Docker
 
 To start the project using Docker:
@@ -55,7 +65,6 @@ php -S localhost:8000 -t public
 
 ## API Access
 
-
 The API is available at:  
 `http://localhost:8000/api`
 
@@ -63,11 +72,11 @@ The API is available at:
 
 ```json
 {
-	"title": "book test",
-	"description": "book test",
-	"publicationDate": "2025-11-25",
-	"author": "/api/authors/1",
-	"categories": ["/api/categories/1"]
+    "title": "book test",
+    "description": "book test",
+    "publicationDate": "2025-11-25",
+    "author": "/api/authors/1",
+    "categories": ["/api/categories/1"]
 }
 ```
 

@@ -21,12 +21,12 @@ class Category
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['category:read','book:read'])]
+    #[Groups(['category:read', 'book:read'])]
     private ?int $id = null;
 
     // Category name must be unique, readable and writable
     #[ORM\Column(length: 255, unique: true)]
-    #[Groups(['category:read','category:write','book:read','book:write'])]
+    #[Groups(['category:read', 'category:write', 'book:read', 'book:write'])]
     private ?string $name = null;
 
     /**
@@ -66,7 +66,7 @@ class Category
     }
 
     /**
-     * Returns all books associated with this category
+     * Returns all books associated with this category.
      *
      * @return Collection<int, Book>
      */

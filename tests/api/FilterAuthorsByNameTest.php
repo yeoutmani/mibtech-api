@@ -26,7 +26,7 @@ class FilterAuthorsByNameTest extends ApiTestCase
             // Send a POST request to create each Author
             $client->request('POST', '/api/authors', [
                 'headers' => ['Content-Type' => 'application/ld+json'],
-                'json' => [
+                'json'    => [
                     'name' => $name, // Only required field
                 ],
             ]);

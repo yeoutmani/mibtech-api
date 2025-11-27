@@ -1,0 +1,7 @@
+api_platform:
+    enable_swagger: false
+    enable_swagger_ui: false
+    enable_re_doc: false
+    enable_profiler: false
+    defaults:
+        pagination_enabled: false

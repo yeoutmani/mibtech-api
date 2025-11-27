@@ -10,7 +10,7 @@ class RetrieveBookAndAuthorByIdTest extends ApiTestCase
     protected static ?bool $alwaysBootKernel = true;
 
     public function testRetrieveBookAndAuthorById(): void
-    {    
+    {
         // Create an API client to send HTTP requests
         $client = static::createClient();
 
@@ -21,7 +21,7 @@ class RetrieveBookAndAuthorByIdTest extends ApiTestCase
 
         $authorResponse = $client->request('POST', '/api/authors', [
             'headers' => ['Content-Type' => 'application/ld+json'], // JSON-LD
-            'json' => [
+            'json'    => [
                 'name' => 'Mohammed Choukri', // Only required property
             ],
         ]);
@@ -42,10 +42,10 @@ class RetrieveBookAndAuthorByIdTest extends ApiTestCase
 
         $bookResponse = $client->request('POST', '/api/books', [
             'headers' => ['Content-Type' => 'application/ld+json'],
-            'json' => [
-                'title' => 'Jane Book',
+            'json'    => [
+                'title'           => 'Jane Book',
                 'publicationDate' => '2025-11-25',
-                'author' => $authorIri,   // Link using the IRI
+                'author'          => $authorIri,   // Link using the IRI
             ],
         ]);
 

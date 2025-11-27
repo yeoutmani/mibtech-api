@@ -21,7 +21,7 @@ class FilterBooksByPublicationDateTest extends ApiTestCase
 
         $authorResponse = $client->request('POST', '/api/authors', [
             'headers' => ['Content-Type' => 'application/ld+json'],
-            'json' => [
+            'json'    => [
                 'name' => 'Author Filter', // Used to identify test books later
             ],
         ]);
@@ -42,10 +42,10 @@ class FilterBooksByPublicationDateTest extends ApiTestCase
         foreach ($dates as $date) {
             $client->request('POST', '/api/books', [
                 'headers' => ['Content-Type' => 'application/ld+json'],
-                'json' => [
-                    'title' => 'Book ' . $date,             // Unique title for debugging
+                'json'    => [
+                    'title'           => 'Book ' . $date,             // Unique title for debugging
                     'publicationDate' => $date,             // Date used for filtering
-                    'author' => $authorIri,                 // Link to the created author
+                    'author'          => $authorIri,                 // Link to the created author
                 ],
             ]);
 
@@ -88,7 +88,7 @@ class FilterBooksByPublicationDateTest extends ApiTestCase
         foreach ($data['member'] as $book) {
 
             // Filter only books that belong to the author created in this test
-            if (isset($book['author']['name']) && $book['author']['name'] === 'Author Filter') {
+            if (isset($book['author']['name']) && 'Author Filter' === $book['author']['name']) {
 
                 // Ensure the book’s publicationDate is one of the expected values
                 $this->assertContains($book['publicationDate'], $expectedDates);

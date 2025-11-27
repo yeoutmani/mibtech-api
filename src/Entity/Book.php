@@ -2,10 +2,11 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Doctrine\Orm\Filter\DateFilter;
 use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
-use ApiPlatform\Doctrine\Orm\Filter\DateFilter;
 use App\Repository\BookRepository;
+use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -31,24 +32,24 @@ class Book
 
     // Book title, readable and writable
     #[ORM\Column(length: 255)]
-    #[Groups(['book:read','book:write'])]
+    #[Groups(['book:read', 'book:write'])]
     private ?string $title = null;
 
     // Description of the book, optional
     #[ORM\Column(type: Types::TEXT, nullable: true)]
-    #[Groups(['book:read','book:write'])]
+    #[Groups(['book:read', 'book:write'])]
     private ?string $description = null;
 
     // Publication date, optional
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
-    #[Groups(['book:read','book:write'])]
-    private ?\DateTime $publicationDate = null;
+    #[Groups(['book:read', 'book:write'])]
+    private ?DateTime $publicationDate = null;
 
     // Many books belong to one author
     // inversedBy='books' → matches Author::$books
     #[ORM\ManyToOne(inversedBy: 'books')]
     #[ORM\JoinColumn(nullable: false)] // Book must always have an author
-    #[Groups(['book:read','book:write'])]
+    #[Groups(['book:read', 'book:write'])]
     private ?Author $author = null;
 
     /**
@@ -59,7 +60,7 @@ class Book
      * @var Collection<int, Category>
      */
     #[ORM\ManyToMany(targetEntity: Category::class, inversedBy: 'books')]
-    #[Groups(['book:read','book:write'])]
+    #[Groups(['book:read', 'book:write'])]
     private Collection $categories;
 
     public function __construct()
@@ -99,14 +100,15 @@ class Book
         return $this;
     }
 
-    public function getPublicationDate(): ?\DateTime
+    public function getPublicationDate(): ?DateTime
     {
         return $this->publicationDate;
     }
 
-    public function setPublicationDate(?\DateTime $publicationDate): static
+    public function setPublicationDate(?DateTime $publicationDate): static
     {
         $this->publicationDate = $publicationDate;
+
         return $this;
     }
 
@@ -124,7 +126,7 @@ class Book
 
     /**
      * @return Collection<int, Category>
-     * Returns all categories linked to this book
+     *                                   Returns all categories linked to this book
      */
     public function getCategories(): Collection
     {
@@ -132,7 +134,7 @@ class Book
     }
 
     /**
-     * Adds a category to the book if it’s not already linked
+     * Adds a category to the book if it’s not already linked.
      */
     public function addCategory(Category $category): static
     {
@@ -144,7 +146,7 @@ class Book
     }
 
     /**
-     * Removes a category from the book
+     * Removes a category from the book.
      */
     public function removeCategory(Category $category): static
     {
