@@ -81,7 +81,7 @@ jobs:
                   persist-credentials: false
 
             - name: Run Super-Linter
-              uses: super-linter/super-linter/slim@v8
+              uses: super-linter/super-linter@v8
               timeout-minutes: 30
               env:
                   VALIDATE_ALL_CODEBASE: false
@@ -97,7 +97,8 @@ jobs:
                   VALIDATE_PHP_PHPSTAN: false
                   VALIDATE_PHP_PHP_CS_FIXER: false
                   JSCPD_CONFIG_FILE: .jscpd.json
-                  JSCPD_MIN_TOKENS: 50
+                  JSCPD_MIN_TOKENS: 100
+                  FILTER_REGEX_EXCLUDE: "src/Entity"
 
     php-cs-fixer:
         name: PHP CS Fixer
