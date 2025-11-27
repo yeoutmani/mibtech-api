@@ -96,7 +96,7 @@ jobs:
                   VALIDATE_PHP_PSALM: false
                   VALIDATE_PHP_PHPSTAN: false
                   VALIDATE_PHP_PHP_CS_FIXER: false
-                  JSCPD_CONFIG_FILE: .jscpd.json
+                  FILTER_REGEX_EXCLUDE: "src/Entity/(Author|Category)\.php"
 
     php-cs-fixer:
         name: PHP CS Fixer

@@ -1,5 +1,0 @@
-{
-    "threshold": 3,
-    "skipLocal": true,
-    "ignore": ["src/Entity/*"]
-}
