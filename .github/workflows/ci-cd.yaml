@@ -182,7 +182,7 @@ jobs:
                   key: ${{ secrets.SSH_PRIVATE_KEY }}
                   script: |
                       sudo mkdir -p /opt/mibtech-api
-                      sudo cp -r ~/mibtech-api-deploy/* /opt/mibtech-api/
+                      sudo cp -r ~/mibtech-api/* /opt/mibtech-api/
                       sudo chmod 600 /opt/mibtech-api/.env
                       sudo chown root:root /opt/mibtech-api/.env
                       rm -rf ~/mibtech-api-deploy
