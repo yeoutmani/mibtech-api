@@ -84,8 +84,6 @@ jobs:
               uses: super-linter/super-linter/slim@v8
               timeout-minutes: 30
               env:
-                  VALIDATE_JSCPD: true
-                  JSCPD_CONFIG: jscpd.config.json
                   VALIDATE_ALL_CODEBASE: false
                   DEFAULT_BRANCH: main
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -96,6 +94,7 @@ jobs:
                   VALIDATE_PHP_PSALM: false
                   VALIDATE_PHP_PHPSTAN: false
                   VALIDATE_PHP_PHP_CS_FIXER: false
+                  JSCPD_CONFIG: jscpd.config.json
 
     php-cs-fixer:
         name: PHP CS Fixer
