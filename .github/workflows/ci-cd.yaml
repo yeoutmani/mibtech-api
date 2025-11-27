@@ -139,6 +139,22 @@ jobs:
               with:
                   persist-credentials: false
 
+            # 1️⃣ INSTALL DOCKER IF MISSING
+            - name: Install Docker on server
+              uses: appleboy/ssh-action@v1.0.0
+              with:
+                  host: ${{ secrets.IO_ADDRESS }}
+                  username: ${{ secrets.SSH_USER }}
+                  key: ${{ secrets.SSH_PRIVATE_KEY }}
+                  script: |
+                      if ! command -v docker >/dev/null 2>&1; then
+                          echo "Installing Docker..."
+                          sudo apt update
+                          sudo apt install -y docker.io docker-compose-plugin
+                          sudo usermod -aG docker $USER
+                      fi
+
+            # 2️⃣ PREPARE DIRECTORY
             - name: Deploy to server via SSH
               uses: appleboy/ssh-action@v1.0.0
               with:
@@ -146,13 +162,12 @@ jobs:
                   username: ${{ secrets.SSH_USER }}
                   key: ${{ secrets.SSH_PRIVATE_KEY }}
                   script: |
-                      cd /opt/mibtech-api
-                      sudo docker compose down
+                      cd /opt/mibtech-api || exit 1
+                      sudo docker compose down || true
                       rm -rf ~/mibtech-api-deploy
                       mkdir -p ~/mibtech-api-deploy
-                      sudo find /opt/mibtech-api -maxdepth 1 -type f ! -name '.env*' ! -name 'docker-compose.yml' -delete
-                      sudo rm -rf /opt/mibtech-api/src /opt/mibtech-api/config /opt/mibtech-api/public /opt/mibtech-api/var /opt/mibtech-api/vendor
 
+            # 3️⃣ UPLOAD FILES
             - name: Copy files
               uses: appleboy/scp-action@v0.1.7
               with:
@@ -163,6 +178,7 @@ jobs:
                   target: "~/mibtech-api-deploy"
                   overwrite: true
 
+            # 4️⃣ CREATE .env
             - name: Create .env file
               uses: appleboy/ssh-action@v1.0.0
               with:
@@ -170,10 +186,9 @@ jobs:
                   username: ${{ secrets.SSH_USER }}
                   key: ${{ secrets.SSH_PRIVATE_KEY }}
                   script: |
-                      cat > ~/mibtech-api-deploy/.env << 'EOF'
-                      APP_ENV=prod
-                      EOF
+                      echo "APP_ENV=prod" > ~/mibtech-api-deploy/.env
 
+            # 5️⃣ MOVE FILES & RESTART DOCKER
             - name: Move files & restart Docker
               uses: appleboy/ssh-action@v1.0.0
               with:
@@ -183,28 +198,7 @@ jobs:
                   script: |
                       sudo mkdir -p /opt/mibtech-api
                       sudo cp -r ~/mibtech-api-deploy/* /opt/mibtech-api/
-                      ls -l /opt/mibtech-api
-                      # Vérification et copie du .env si absent
-                      if [ ! -f /opt/mibtech-api/.env ] && [ -f ~/mibtech-api-deploy/.env ]; then
-                        echo ".env absent, copie depuis le dossier de déploiement."
-                        sudo cp ~/mibtech-api-deploy/.env /opt/mibtech-api/.env
-                      fi
-                      if [ -f /opt/mibtech-api/.env ]; then
-                        echo ".env file found:"
-                        cat /opt/mibtech-api/.env
-                        sudo chmod 600 /opt/mibtech-api/.env
-                        sudo chown root:root /opt/mibtech-api/.env
-                      else
-                        echo ".env file not found in /opt/mibtech-api"
-                      fi
                       rm -rf ~/mibtech-api-deploy
                       cd /opt/mibtech-api
-                      if command -v docker >/dev/null 2>&1; then
-                        sudo docker compose up -d --build
-                        sudo docker image prune -f
-                        sleep 10
-                        sudo docker compose ps
-                        sudo docker compose logs --tail=50 php
-                      else
-                        echo "Docker is not installed or not in PATH"
-                      fi
+                      sudo docker compose up -d --build
+                      sudo docker image prune -f
