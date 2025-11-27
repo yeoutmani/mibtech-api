@@ -87,7 +87,14 @@ jobs:
                   VALIDATE_ALL_CODEBASE: false
                   DEFAULT_BRANCH: main
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-                  EDITORCONFIG: false
+                  VALIDATE_EDITORCONFIG: false
+                  VALIDATE_BIOME: false
+                  VALIDATE_BIOME_ES: false
+                  VALIDATE_BIOME_JS: false
+                  VALIDATE_BIOME_TS: false
+                  VALIDATE_BIOME_JSON: false
+                  VALIDATE_BIOME_CSS: false
+                  VALIDATE_BIOME_GRAPHQL: false
                   VALIDATE_PHP: false
                   VALIDATE_PHP_BUILTIN: false
                   VALIDATE_PHP_PHPCS: false
