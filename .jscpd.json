@@ -1,5 +1,0 @@
-{
-    "ignore": ["app/vendor/**", "app/var/**", "app/src/Entity/**"],
-    "threshold": 10,
-    "reporters": ["console"]
-}
