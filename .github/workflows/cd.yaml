@@ -1,0 +1,96 @@
+name: Deploy to Production
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    name: Deploy to Production
+    runs-on: ubuntu-latest
+    environment:
+      name: production
+      url: http://${{ secrets.IO_ADDRESS }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Deploy to server via SSH
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.IO_ADDRESS }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            cd /opt/mibtech-api
+            sudo docker compose down
+            rm -rf ~/mibtech-api-deploy
+            mkdir -p ~/mibtech-api-deploy
+            sudo find /opt/mibtech-api -maxdepth 1 -type f ! -name '.env*' ! -name 'docker-compose.yml' -delete
+            sudo rm -rf /opt/mibtech-api/src /opt/mibtech-api/config /opt/mibtech-api/public /opt/mibtech-api/var /opt/mibtech-api/vendor
+
+      - name: Copy files to server
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.IO_ADDRESS }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          source: ".,!.git,!.github,!var,!vendor"
+          target: "~/mibtech-api-deploy"
+          overwrite: true
+
+      - name: Create .env file from GitHub Secrets
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.IO_ADDRESS }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          script: |
+            cat > ~/mibtech-api-deploy/.env << 'EOF'
+            APP_ENV=prod
+            # Ajoute ici tes autres variables d'environnement Symfony
+            EOF
+
+      - name: Move files and restart containers
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.IO_ADDRESS }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            sudo cp -r ~/mibtech-api-deploy/* /opt/mibtech-api/
+            sudo chmod 600 /opt/mibtech-api/.env
+            sudo chown root:root /opt/mibtech-api/.env
+            rm -rf ~/mibtech-api-deploy
+            cd /opt/mibtech-api
+            sudo docker compose up -d --build
+            sudo docker image prune -f
+            sleep 10
+            sudo docker compose ps
+            sudo docker compose logs --tail=50 php
+  notify:
+    name: Notify Deployment
+    runs-on: ubuntu-latest
+    needs: [deploy]
+    if: always()
+
+    steps:
+      - name: Send notification
+        run: |
+          if [ "${{ needs.test.result }}" == "success" ] && [ "${{ needs.security.result }}" == "success" ]; then
+            echo "✅ CI/CD pipeline completed successfully!"
+            echo "📦 Branch: ${{ github.ref_name }}"
+            echo "🔍 Tests and security checks passed"
+            if [ "${{ github.ref }}" == "refs/heads/production-env" ] || [ "${{ github.ref }}" == "refs/heads/main" ]; then
+              echo "🚀 Deployment triggered to production"
+                      echo "🌐 URL: https://${{ secrets.IO_ADDRESS }}"
+            fi
+          else
+            echo "❌ CI/CD pipeline failed"
+            echo "Test result: ${{ needs.test.result }}"
+            echo "Security result: ${{ needs.security.result }}"
+            exit 1
+          fi
