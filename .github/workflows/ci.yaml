@@ -84,9 +84,12 @@ jobs:
               uses: super-linter/super-linter/slim@v8
               timeout-minutes: 30
               env:
+                  VALIDATE_JSCPD: true
+                  JSCPD_CONFIG: jscpd.config.json
                   VALIDATE_ALL_CODEBASE: false
                   DEFAULT_BRANCH: main
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                  EDITORCONFIG: false
                   VALIDATE_PHP: false
                   VALIDATE_PHP_BUILTIN: false
                   VALIDATE_PHP_PHPCS: false
